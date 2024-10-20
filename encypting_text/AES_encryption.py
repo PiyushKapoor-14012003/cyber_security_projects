@@ -32,7 +32,7 @@ class AESManager:
 
 # Example usage
 aes_manager = AESManager()
-plain_text = "This is a secret message."
+plain_text = input("Enter the text to encrypt: ")
 print(f"Plain Text: {plain_text}")
 cipher_text = aes_manager.encrypt_message(plain_text)
 print(f"Cipher Text: {cipher_text}")
